@@ -13,7 +13,7 @@ function showLoader() {
   appHtml.classList.add("loader");
 }
 
-function main() {
+function saveCache() {
   showLoader()
   console.log("Started Loading")
   fetch('./data.json')
@@ -21,7 +21,7 @@ function main() {
     .then(data => {
       data = Array.from({length: 10}, (_, i) => JSON.parse(JSON.stringify(data)))
       performance.mark(markerNameA);
-      data = new TextEncoder('utf-8').encode(JSON.stringify(data));
+      data = new TextEncoder().encode(JSON.stringify(data));
       performance.mark(markerNameB);
       performance.measure("JSON to Uint8Array", markerNameA, markerNameB);
       data = zipFile(data)
@@ -61,12 +61,10 @@ async function getStorageData() {
 
 function zipFile(data) {
   return pako.deflate(data, {level: 6})
-  // return pako.deflate(JSON.stringify(data), {level: 6})
 }
 
 function unzipFile(data) {
   return pako.inflate(data, {level: 6})
-  // return JSON.parse(pako.inflate(data, {to: 'string'}));
 }
 
-main()
+saveCache()
